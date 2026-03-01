@@ -3,14 +3,10 @@ x-app: &default-app
     context: "."
     target: "${MIX_ENV:-prod}"
     args:
-      - "UID=${UID:-1000}"
-      - "GID=${GID:-1000}"
+      - "UID=${UID:-501}"
+      - "GID=${GID:-20}"
       - "MIX_ENV=${MIX_ENV:-prod}"
       - "NODE_ENV=${NODE_ENV:-production}"
-  depends_on:
-    postgres:
-      condition: "service_started"
-      required: false
   env_file:
     - ".env"
   restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
@@ -24,8 +20,8 @@ x-assets: &default-assets
     context: "."
     target: "assets"
     args:
-      - "UID=${UID:-1000}"
-      - "GID=${GID:-1000}"
+      - "UID=${UID:-501}"
+      - "GID=${GID:-20}"
       - "NODE_ENV=${NODE_ENV:-production}"
   env_file:
     - ".env"
@@ -47,13 +43,12 @@ services:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       # POSTGRES_DB: "${POSTGRES_DB}"
-    image: "postgres:16.3-bookworm"
+    image: "postgres:18.3-trixie"
     profiles: ["postgres"]
     restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
     stop_grace_period: "3s"
     volumes:
-      - "postgres:/var/lib/postgresql/data"
-
+      - "postgres:/var/lib/postgresql"
   web:
     <<: *default-app
     deploy:

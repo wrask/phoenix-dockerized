@@ -2,7 +2,7 @@ defmodule HelloWeb.PageController do
   use HelloWeb, :controller
 
   def home(conn, _params) do
-    run_mode = if System.get_env("RELEASE_NAME"), do: "release", else: "mix"
+    run_mode = if System.get_env("RELEASE_NAME"), do: "prod (release)", else: "dev (mix)"
     owner_site_url = Application.get_env(:hello, HelloWeb.Endpoint)[:owner_site_url]
     repository_url = Application.get_env(:hello, HelloWeb.Endpoint)[:repository_url]
 

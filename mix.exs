@@ -5,14 +5,16 @@ defmodule Hello.MixProject do
     [
       app: :hello,
       version: "0.1.0",
-      elixir: "~> 1.13",
+      elixir: "~> 1.19",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       build_path: "/mix/_build",
       deps_path: "/mix/deps",
       aliases: aliases(),
       deps: deps(),
-      test_coverage: [tool: ExCoveralls]
+      test_coverage: [tool: ExCoveralls],
+      releases: releases(),
+      listeners: [Phoenix.CodeReloader]
     ]
   end
 
@@ -28,26 +30,26 @@ defmodule Hello.MixProject do
 
   defp deps do
     [
-      {:bandit, "1.5.7"},
-      {:credo, "1.7.7", only: [:dev, :test], runtime: false},
-      {:dns_cluster, "~> 0.1.3"},
-      {:ecto_sql, "3.11.3"},
-      {:excoveralls, "0.18.2", only: [:dev, :test]},
-      {:finch, "0.18.0"},
-      {:floki, "0.36.2", only: :test},
-      {:gettext, "0.24.0"},
-      {:heroicons, "0.5.5"},
+      {:bandit, "1.10.3"},
+      {:credo, "1.7.16", only: [:dev, :test], runtime: false},
+      {:dns_cluster, "~> 0.2.0"},
+      {:ecto_sql, "3.13.4"},
+      {:excoveralls, "0.18.5", only: [:dev, :test]},
+      {:finch, "0.21.0"},
+      {:floki, "0.38.0", only: :test},
+      {:gettext, "1.0.2"},
+      {:heroicons, "0.5.7"},
       {:jason, "1.4.4"},
-      {:phoenix, "1.7.14"},
-      {:phoenix_ecto, "4.6.2"},
-      {:phoenix_html, "4.1.1"},
-      {:phoenix_live_dashboard, "0.8.4"},
-      {:phoenix_live_reload, "1.5.3", only: :dev},
-      {:phoenix_live_view, "0.20.17"},
-      {:postgrex, "0.18.0"},
-      {:swoosh, "1.16.10"},
-      {:telemetry_metrics, "1.0.0"},
-      {:telemetry_poller, "1.1.0"}
+      {:phoenix, "1.8.4"},
+      {:phoenix_ecto, "4.7.0"},
+      {:phoenix_html, "4.3.0"},
+      {:phoenix_live_dashboard, "0.8.7"},
+      {:phoenix_live_reload, "1.6.2", only: :dev},
+      {:phoenix_live_view, "1.1.25"},
+      {:postgrex, "0.22.0"},
+      {:swoosh, "1.22.1"},
+      {:telemetry_metrics, "1.1.0"},
+      {:telemetry_poller, "1.3.0"}
     ]
   end
 
@@ -57,6 +59,14 @@ defmodule Hello.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+    ]
+  end
+
+  defp releases do
+    [
+      hello: [
+        include_executables_for: [:unix]
+      ]
     ]
   end
 end
