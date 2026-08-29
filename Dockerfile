@@ -1,15 +1,16 @@
-FROM node:25.7.0-trixie-slim AS assets
+FROM node:26.8.1-trixie-slim AS assets
 
 WORKDIR /app/assets
 
-ARG UID=1000  
-ARG GID=1000
+ARG DOCKER_UID=1000
+ARG DOCKER_GID=1000
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends build-essential \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
   && apt-get clean \
-  && groupmod -g "${GID}" node && usermod -u "${UID}" -g "${GID}" node \
+  && npm install -g yarn@latest \
+  && groupmod -g "${DOCKER_GID}" node && usermod -u "${DOCKER_UID}" -g "${DOCKER_GID}" node \
   && mkdir -p /node_modules && chown node:node -R /node_modules /app
 
 USER node
@@ -30,19 +31,19 @@ RUN if [ "${NODE_ENV}" != "development" ]; then \
 
 ###############################################################################
 
-FROM elixir:1.19.5-slim AS dev
+FROM elixir:1.20.3-slim AS dev
 
 WORKDIR /app
 
-ARG UID=1000
-ARG GID=1000
+ARG DOCKER_UID=1000
+ARG DOCKER_GID=1000
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates build-essential curl git inotify-tools \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
   && apt-get clean \
-  && groupadd -g "${GID}" elixir \
-  && useradd --create-home --no-log-init -u "${UID}" -g "${GID}" elixir \
+  && groupadd -g "${DOCKER_GID}" elixir \
+  && useradd --create-home --no-log-init -u "${DOCKER_UID}" -g "${DOCKER_GID}" elixir \
   && mkdir -p /mix && chown elixir:elixir -R /mix /app
 
 USER elixir
@@ -80,19 +81,19 @@ CMD ["iex", "-S", "mix", "phx.server"]
 
 ###############################################################################
 
-FROM elixir:1.19.5-slim AS prod
+FROM elixir:1.20.3-slim AS prod
 
 WORKDIR /app
 
-ARG UID=1000
-ARG GID=1000
+ARG DOCKER_UID=1000
+ARG DOCKER_GID=1000
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends curl \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man \
   && apt-get clean \
-  && groupadd -g "${GID}" elixir \
-  && useradd --create-home --no-log-init -u "${UID}" -g "${GID}" elixir \
+  && groupadd -g "${DOCKER_GID}" elixir \
+  && useradd --create-home --no-log-init -u "${DOCKER_UID}" -g "${DOCKER_GID}" elixir \
   && chown elixir:elixir -R /app
 
 USER elixir
